@@ -1,0 +1,27 @@
+@echo off
+setlocal enabledelayedexpansion
+
+REM Set the source files
+set source1=chdman.exe
+set source2=cue2chd.bat
+
+REM Set the root directory
+set rootdir=%cd%
+
+REM Loop through all subdirectories
+for /r "%rootdir%" %%d in (.) do (
+    REM Copy the files to the current subdirectory
+    copy "%rootdir%\%source1%" "%%d\"
+    copy "%rootdir%\%source2%" "%%d\"
+
+    REM Change to the current subdirectory
+    pushd "%%d"
+
+    REM Execute the batch file
+    call cue2chd.bat
+
+    REM Return to the root directory
+    popd
+)
+
+endlocal
