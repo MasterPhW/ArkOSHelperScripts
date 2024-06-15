@@ -20,8 +20,14 @@ def create_m3u_playlists(folder_path):
                 if spiel_name not in spiele:
                     spiele[spiel_name] = []
                 spiele[spiel_name].append(dateiname)
+            else:
+                # Erstelle eine M3U-Datei für jede einzelne CHD-Datei
+                m3u_dateiname = f"{os.path.splitext(dateiname)[0]}.m3u"
+                m3u_dateipfad = os.path.join(folder_path, m3u_dateiname)
+                with open(m3u_dateipfad, 'w') as m3u_datei:
+                    m3u_datei.write(f"{dateiname}\n")
 
-    # Erstelle M3U-Dateien für jedes Spiel
+    # Erstelle M3U-Dateien für Spiele mit mehreren Discs
     for spiel_name, dateien in spiele.items():
         # Sortiere die Dateien, um die richtige Reihenfolge sicherzustellen
         dateien.sort()
@@ -33,9 +39,9 @@ def create_m3u_playlists(folder_path):
         # Schreibe die Dateipfade in die M3U-Datei
         with open(m3u_dateipfad, 'w') as m3u_datei:
             for datei in dateien:
-                # Konvertiere den Pfad in Unix-Format ohne Laufwerksbuchstaben
+                # Konvertiere den Pfad in Unix-Format ohne führende Schrägstriche
                 relativer_pfad = os.path.relpath(os.path.join(folder_path, datei), start=folder_path)
-                unix_stil_pfad = f"/{relativer_pfad.replace(os.sep, '/')}"
+                unix_stil_pfad = relativer_pfad.replace(os.sep, '/')
                 m3u_datei.write(f"{unix_stil_pfad}\n")
 
     print("M3U-Playlists erfolgreich erstellt.")
